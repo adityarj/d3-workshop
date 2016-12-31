@@ -1,0 +1,88 @@
+<!doctype html>
+
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+
+  <title>d3 heatmap</title>
+  <meta name="description" content="d3 Heatmap">
+  <meta name="author" content="Aditya Raju">
+  <script src="https://d3js.org/d3.v4.min.js"></script>
+</head>
+
+<body>
+  <div id="heatmap">
+  	
+  </div>
+  <script type="text/javascript">
+  	var data =  [{values: [4,54,62,34]},
+  				 {values: [75,43,15,25]},
+  				 {values: [52,90,32,14]},
+  				 {values: [65,16,88,33]}];
+
+  	//The color scale we are using, from lowest to highest range			 
+	var colors = ["#f2f0f7","#dadaeb","#bcbddc","#9e9ac8","#807dba","#6a51a3","#4a1486"];
+	
+	//Define the scale we are using. This seperates the domain into specific quanta based on our range 
+	var heat = d3.scaleQuantize()
+					.domain([0, 100])
+					.range(colors);
+
+	//Basic canvas to start our visualization
+	var svg = d3.select('#heatmap')
+				.append('svg')
+				.attr('width',960)
+				.attr('height',540)
+				.append('g');
+
+	//Let's start making our heatmap! The following groups each row of values according to the rows in the heatmap
+	var heatmap = svg.selectAll('.squares')
+					.data(data)
+					.enter()
+					.append('g')
+					.attr('transform',function(d,i) {
+						return 'translate(0,'+i*45+')';
+					})
+					.attr('class','squares');
+	//Create each of the squares and position them accordingly, use the scale we created to color them
+	var squares = heatmap.selectAll('.each')
+					.data(function(d,i) {return d.values;})
+					.enter()
+					.append('rect')
+					.attr('class','each')
+					.attr('height',40)
+					.attr('width',40)
+					.attr('id',function(d,i) {return i})
+					.on('mouseover',function() {
+						d3.select(this)
+						.transition()
+						.duration(200)
+						.attr('height',42)
+						.attr('width',42);
+					})
+					.on('mouseout',function() {
+						d3.select(this)
+						.transition()
+						.duration(200)
+						.attr('height',40)
+						.attr('width',40);
+
+					})
+					.attr('x',function(d,i) {return i*45})
+					.attr('fill',function(d,i) {return heat(d);});
+
+	//Labels that indicate the value of each square
+	var text = heatmap.selectAll('.text')	
+					.data(function(d,i) {return d.values;})
+					.enter()
+					.append('text')
+					.text(function(d,i) {return d;})
+					.style('font-family','Typo Grotesk')
+					.style('font-weight','600')
+					.style('fill','black')
+					.style('user-select','none')
+					.attr('x',function(d,i) {return 10 + i*45})	
+					.attr('y','25');		
+  </script>
+</body>
+</html>
