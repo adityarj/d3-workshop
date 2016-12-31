@@ -1,0 +1,57 @@
+<!doctype html>
+
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+
+  <title>d3 circle example</title>
+  <meta name="description" content="d3 circle">
+  <meta name="author" content="Aditya Raju">
+  <script src="https://d3js.org/d3.v4.min.js"></script>
+</head>
+
+<body>
+  <div id="circle">
+  	
+  </div>
+  <script type="text/javascript">
+
+  		//The following is going to be the width and height of our canvas. 
+  		var width = 960, height = 540; 
+
+  		/*Define our canvas, an svg element. d3 visualizations will require a svg canvas to start off. 
+  		Not alwawys, but most good visualizations will make use of a canvas */
+  		var svg = d3.select('#circle')
+  						.append('svg')
+  						.attr('height',height)
+  						.attr('width',width)
+  						.append('g'); //Grouep element, useful to categorize vector elements since nesting vector elements is not possible
+
+  		var yellow = '#ffff61', green = '#77dd77';
+
+  		//Uncomment the following to append a rectangle 
+
+		// var rectangle = svg.append('rect')
+		// 				.attr('x',width/2)
+		// 				.attr('y',height/2)
+		// 				.attr('height',height/10)
+		// 				.attr('width',width/10)
+		// 				.style('fill',green);
+
+		//Uncomment the following to append a line, notice how the function can be used
+
+		// var line = svg.append('line')
+		// 				.attr('x1',function() {
+		// 					return width/2;
+		// 				})
+		// 				.attr('x2',function() {
+		// 					return width/2 + width/10;
+		// 				})
+		// 				.attr('y1',height/2 + height/20)
+		// 				.attr('y2',height/2 + height/20)
+		// 				.attr('stroke-width',3)
+		// 				.attr('stroke',yellow);
+
+  </script>
+</body>
+</html>
