@@ -105,7 +105,7 @@
     or in a 'sticky' state */
     function dblclick(d) {
       if (d3.select(this).style('opacity') == 1) {
-        d3.select(this).style('fill','#cc3333').style('opacity',0.99);
+        d3.select(this).style('fill','#FF9100').style('opacity',0.99);
       } else {
         d3.select(this).style('fill','#ccc').style('opacity',1);
         d.fx = null;
@@ -116,7 +116,7 @@
 
     function dragstart(d) {
       if (!d3.event.active) force.alphaTarget(0.3).restart();
-      d3.select(this).style('fill','#cc3333').style('opacity',0.99);
+      d3.select(this).style('fill','#FF9100').style('opacity',0.99);
       d.fx = d.x;
       d.fy = d.y;
     }
