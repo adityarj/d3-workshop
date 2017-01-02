@@ -16,7 +16,7 @@
   </div>
   <style type="text/css">
     .axis {
-      font-family: 'how cute','san serif';
+      font-family: 'dosis','san serif';
       color: #212121;
     }
     .axis > path {
@@ -72,7 +72,7 @@
       we obtain from our respective scales) and churns out the path. Notice the 'curve' property.
       This sets the interpolation of our line. Try removing it to see what happens */
       var line = d3.line()
-                  .curve(d3.curveStepBefore)
+                  .curve(d3.curveStepAfter)
                   .x(function(d,i) {return x(d.month);})
                   .y(function(d,i) {return y(d.value);})
 
@@ -107,7 +107,7 @@
       svg.append('text')
           .attr('transform','translate('+margin+','+margin+')')
           .text('Number of flights')
-          .style('font-family','how cute')
+          .style('font-family','dosis')
           .style('font-size',12);
 
 
