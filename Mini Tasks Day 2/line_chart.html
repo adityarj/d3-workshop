@@ -1,0 +1,116 @@
+<!doctype html>
+
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+
+  <title>d3 Linear Chart</title>
+  <meta name="description" content="d3 Linear Chart">
+  <meta name="author" content="Aditya Raju">
+  <script src="https://d3js.org/d3.v4.min.js"></script>
+</head>
+
+<body>
+  <div id="circle">
+  	
+  </div>
+  <style type="text/css">
+    .axis {
+      font-family: 'how cute','san serif';
+      color: #212121;
+    }
+    .axis > path {
+      stroke-width: 0.5;
+    }
+    .tick > line {
+      stroke-width: 0.5;
+    }
+  </style>
+  <script type="text/javascript">
+
+    //Here's our data, the number of flights I've flown each month in 2016
+    var data = [
+                  {month: 'January',value: 2},
+                  {month: 'February', value:3},
+                  {month: 'March', value: 3},
+                  {month: 'April',value: 1},
+                  {month: 'May',value: 2},
+                  {month: 'June',value:2},
+                  {month: 'July',value:0},
+                  {month: 'August',value:4},
+                  {month: 'September',value: 0},
+                  {month: 'October',value:3},
+                  {month:'November',value:0},
+                  {month: 'December',value:4}
+                ];
+
+  		//The following is going to be the width and height of our canvas, as well as the margin
+  		var width = 960, height = 540, margin = 30;
+
+      //We define our canvas as usual, and adjust for margin
+  		var svg = d3.select('#circle')
+  						.append('svg')
+  						.attr('height',height)
+  						.attr('width',width)
+  						.append('g')
+              .attr('transform','translate('+margin+','+margin+')');
+
+      //A point scale is a type of ordinal scale useful for point data, with the discrete domain of the number of months
+      var x = d3.scalePoint()
+                .range([0,width - margin*2]);
+
+      //A usual linear scale will suffice for the y axis
+      var y = d3.scaleLinear()
+                .range([height - margin*2,0]);
+
+      //Here we define the domains of the two scales. We cannot use d3.extent for the x domain as the data is non-numeric
+      x.domain(data.map(function(d,i) {return d.month;}));
+      y.domain(d3.extent(data, function(d,i) {return d.value;}));
+
+      /* The line function translates the x, and y co-ordinates to path co-ordinates.
+      Understanding it is quite straighforward, it simply takes a x and y position (which,
+      we obtain from our respective scales) and churns out the path. Notice the 'curve' property.
+      This sets the interpolation of our line. Try removing it to see what happens */
+      var line = d3.line()
+                  .curve(d3.curveStepBefore)
+                  .x(function(d,i) {return x(d.month);})
+                  .y(function(d,i) {return y(d.value);})
+
+      /* Now we should append our axes. The last line is where the magic happens, 
+      it essentially generates a complete axis and orients it horizontally. It's basically
+      mapping the entire domain of the scale to its range and generating 'ticks' and paths */
+      svg.append('g')
+          .attr('class','axis axis.x')
+          .attr('transform','translate(0,'+ +(height - margin*2)+')')
+          .call(d3.axisBottom(x));
+
+      //Let's do the same for the y axis
+      svg.append('g')
+          .attr('class','axis axis.y')
+          .call(d3.axisLeft(y));
+
+      /* let's create our actual line. We create a path element, and to its 'd' property, feed our line,
+      which will automatically translate the x, y co-ordintes from our scale into the required path. */
+
+      /*A datum just binds the data to a single, in this case, 'path' element. 
+      This is different from data() which can bind to multiple elements.
+      This really is just d3 specific jargon. You'll get used to it */
+      svg.append('path')
+          .datum(data)
+          .attr('class','line')
+          .attr('d',line)    
+          .attr('fill','none')
+          .attr('stroke-width',5)
+          .attr('stroke','#9999ff');
+
+      //Just one label, and we're done
+      svg.append('text')
+          .attr('transform','translate('+margin+','+margin+')')
+          .text('Number of flights')
+          .style('font-family','how cute')
+          .style('font-size',12);
+
+
+  </script>
+</body>
+</html>
