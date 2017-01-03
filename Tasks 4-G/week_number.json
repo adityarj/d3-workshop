@@ -1,0 +1,8 @@
+{ "week" : [
+		{"day": "Monday", "number": 30},
+		{"day": "Tuesday", "number": 15},
+		{"day": "Wednesday", "number": 30},
+		{"day": "Thursday", "number": 45},
+		{"day": "Friday", "number": 60}
+	]
+}

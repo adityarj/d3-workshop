@@ -1,0 +1,18 @@
+{
+	"week": [{
+		"day": "Monday",
+		"hours": 8.5
+	}, {
+		"day": "Tuesday",
+		"hours": 8.5
+	}, {
+		"day": "Wednesday",
+		"hours": 4
+	}, {
+		"day": "Thursday",
+		"hours": 4
+	}, {
+		"day": "Friday",
+		"hours": 3
+	}]
+}
