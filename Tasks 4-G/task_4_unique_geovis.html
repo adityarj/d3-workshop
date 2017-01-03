@@ -4,7 +4,7 @@
 <head>
   <meta charset="utf-8">
 
-  <title>d3 heatmap</title>
+  <title>d3 Task 4 - Unique Local Visualization</title>
   <meta name="description" content="d3 Heatmap">
   <meta name="author" content="Aditya Raju">
   <script src="https://d3js.org/d3.v4.min.js"></script>
@@ -13,9 +13,6 @@
 
 <body>
   <style type="text/css">
-  	.bounds {
-  		background-color: 'orange';
-  	}
   	.xybox {
   		fill: none;
   		stroke: #212121;
@@ -90,7 +87,7 @@
 
 		/* Okay, so here's the thought process behind my visualization. 
 		I thought I'd use one dimension as color and the other two dimensions as a rectangle for side by side comparison */
-		var colors = ['#e0ecf4','#9ebcda','#8856a7'];
+		var colors = ['#ffeda0','#feb24c','#f03b20'];
 		
 		//Defining the scales we'll be using. I noticed the data for z is <10, so I'm just gonna assume its a 0-10 scale
 		var xscale = d3.scaleLinear()
