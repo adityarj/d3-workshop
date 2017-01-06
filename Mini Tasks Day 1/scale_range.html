@@ -78,12 +78,11 @@
                                   .attr('stroke-width',2)
                                   .attr('stroke','grey');
 
-      //Uncommen the line to see the exponential scale being used to create the line
-
+      // Uncommen the line to see the exponential scale being used to create the line
       // var connector_pow = svg.append('line')
-      //                             .attr('x1',scalePow(45))
-      //                             .attr('y1',20)
-      //                             .attr('x2',scalePow(89.5))
+      //                             .attr('x1',scalePow(Math.sqrt(scaleLinear(20)/(960/(100*100))))) /* The equation is y = mx^2 + c. We get our Y from the previous scale, and use it to find the x value that will satisfy the equation */
+      //                             .attr('y1',20)                                               
+      //                             .attr('x2',scalePow(Math.sqrt(scaleLinear(80)/(960/(100*100))))) 
       //                             .attr('y2',20)
       //                             .attr('stroke-width',2)
       //                             .attr('stroke','black');
