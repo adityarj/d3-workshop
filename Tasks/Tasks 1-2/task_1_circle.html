@@ -4,8 +4,7 @@
 <head>
   <meta charset="utf-8">
 
-  <title>d3 circle example</title>
-  <meta name="description" content="d3 circle">
+  <title>d3 Circle</title>
   <meta name="author" content="Aditya Raju">
   <script src="https://d3js.org/d3.v4.min.js"></script>
 </head>
@@ -26,35 +25,7 @@
   						.attr('width',width)
   						.append('g');
 
-  		//Here's our circle based on the height and width of the canvas
-		var circle = svg.append('circle')
-						.attr('cx',width/2)
-						.attr('cy',height/2)
-						.attr('r',(width + height)/100)
-						.style('fill',blue)
-						.on('mouseover',function() {
-							//Change color on mouseover
-							d3.select(this)
-								.transition()
-								.duration(200)
-								.style('fill',orange);
-						})
-						.on('mouseout',function() {
-							//Return color on mousout
-							d3.select(this)
-								.transition()
-								.duration(200)
-								.style('fill',blue);
-						})
-						.on('click',function() {
-							//Increase size on click
-							d3.select(this)
-								.transition()
-								.duration(300)
-								.attr('r',function() {
-									return ((width + height)/100) + +d3.select(this).attr('r');
-								});
-						});
+  		//Write your code belows
   </script>
 </body>
 </html>

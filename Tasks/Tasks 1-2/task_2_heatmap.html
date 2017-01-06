@@ -4,8 +4,7 @@
 <head>
   <meta charset="utf-8">
 
-  <title>d3 heatmap</title>
-  <meta name="description" content="d3 Heatmap">
+  <title>d3 Heatmap</title>
   <meta name="author" content="Aditya Raju">
   <script src="https://d3js.org/d3.v4.min.js"></script>
 </head>
@@ -15,11 +14,13 @@
   	
   </div>
   <script type="text/javascript">
+  	//Our data, a JSON array
   	var data =  [{values: [4,54,62,34]},
   				 {values: [75,43,15,25]},
   				 {values: [52,90,32,14]},
   				 {values: [65,16,88,33]}];
 
+  	//Defining our width and height of our canvas
 	var width = 960, height = 540; 
 
   	//The color scale we are using, from lowest to highest range			 
@@ -47,47 +48,12 @@
 					})
 					.attr('class','squares');
 
-	//Create each of the squares and position them accordingly, use the scale we created to color them
+	//Write your code below! A little starter code is left to get you started 
 	var squares = heatmap.selectAll('.each')
 					.data(function(d,i) {return d.values;})
 					.enter()
 					.append('rect')
-					.attr('class','each')
-					.attr('height',40)
-					.attr('width',40)
-					.attr('id',function(d,i) {return i})
-					.on('mouseover',function() {
-						//Animation on mouseover, increase the size slightly using a transition
-						d3.select(this)
-						.transition()
-						.duration(200)
-						.attr('height',42)
-						.attr('width',42);
-					})
-					.on('mouseout',function() {
-						//Animation on mouseout, return to normal size
-						d3.select(this)
-						.transition()
-						.duration(200)
-						.attr('height',40)
-						.attr('width',40);
-
-					})
-					.attr('x',function(d,i) {return i*45}) //used to position the blocks to the left
-					.attr('fill',function(d,i) {return heat(d);}); //using the scale we created to color each square accordingly
-
-	//Labels that indicate the value of each square
-	var text = heatmap.selectAll('.text')	
-					.data(function(d,i) {return d.values;}) //The value of the label will be the absolute number
-					.enter()
-					.append('text')
-					.text(function(d,i) {return d;}) //We use the previously fed data to input as text
-					.style('font-family','Typo Grotesk')
-					.style('font-weight','600')
-					.style('fill','black')
-					.style('user-select','none')
-					.attr('x',function(d,i) {return 10 + i*45})	//Positioning the label at the center of each of the squares
-					.attr('y','25'); //y co-ordinate positioning
+					.attr('class','each');
   </script>
 </body>
 </html>

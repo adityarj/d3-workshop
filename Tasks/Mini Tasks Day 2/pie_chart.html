@@ -19,7 +19,7 @@
   		//The following is going to be the width and height of our canvas. 
   		var width = 960, height = 540; 
 
-      //Our data, as per the task
+      //My data, as per the task. Change this to your data.
       var data = [1,9]; //[macs,notmacs]
       var labels = ['Macs','Not Macs'];
       var colors = ['#dd1021','#212121']
@@ -44,10 +44,8 @@
                     .innerRadius(0)
                     .outerRadius(180);
 
-      /*This is a specific d3 magical feature, which abstracts the angle calculations for the path.
-      Hence, we only need to pass a set of values*/
-      var pie = d3.pie()
-                    .value(function(d) {return d;});
+      /*Define your pie function below. Read the API to understand what to define for d3.pie()*/
+      var pie;
 
       //Defining our chart, grouping each arc together
       var chart = svg.selectAll('.arcs')
@@ -56,12 +54,8 @@
                       .append('g')
                       .attr('class','arcs');
 
-      /*A path element essentially is a group of points, to form well a path. 
-      How this is done is with the 'd' or datum, which specifies the x and y co-ordintes on our canvas.
-      Lets append each path to the groups we created above.*/
-      var arcs = chart.append('path')
-                      .attr('d',arc)
-                      .attr('fill',function(d,i) { return color(i); })
+      /*Define your arcs to append to your chart's g elements. Remember that for elements other than circles, rectangles and lines require ___ .*/
+      var arcs;
 
       /*Alright, that's the main part done. Here, we're just gonna create labels to know what's what*/
       var labels = svg.selectAll('.labels')

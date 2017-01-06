@@ -4,8 +4,7 @@
 <head>
   <meta charset="utf-8">
 
-  <title>d3 Task 5 - Linking Visualizations</title>
-  <meta name="description" content="d3 Heatmap">
+  <title>d3 Task 4 - Linking Visualizations</title>
   <meta name="author" content="Aditya Raju">
   <script src="https://d3js.org/d3.v4.min.js"></script>
 </head>
@@ -78,38 +77,12 @@
 			way the cartesian plane is defined */
 			.attr('height',function(d) { return height - margin*2 - y(d.hours); })
 			.attr('fill','#99d8c9') 
-			/*Here we go with trying to link the visualizations together.
-			The code itself is quite straightforward, but a bit tedious. It has to select each
-			element from the other and iterate over it, appplying the fill property again. */
 			.on('mouseover',function(d,i) {
 				d3.select(this).transition().duration(300).style('fill','#2ca25f');
-
-				d3.selectAll('.arc').transition().duration(300).style('fill', function(d,j) {
-					if (j == i) {
-						return '#2ca25f';
-					} else {
-						return color(j%2);
-					}
-				});
-
-
-
-			})
-			/*This may not seem useful now, but what if we weren't using an ordinal scale, or perhaps a line chart?
-			In that case, we would need the cursor's x axis point to be exactly mirrored on the other graph(s). Hence, 
-			inverting the scale to obtain the absolute x axis data value makes sense. However, this is for further reading*/
-			.on('mousemove',function(d,i) {
-				d3.select('#textHover').text('HOURS: 0'+Math.round(y.invert(d3.event.y - margin),2));
 			})
 			//Restore the graph on mouseout
 			.on('mouseout',function(d,i) {
 				d3.select(this).transition().duration(300).style('fill','#99d8c9');
-
-				d3.selectAll('.arc').transition().duration(300).style('fill', function(d,j) {
-					return color(j%2);
-				});
-
-				d3.select('#textHover').text('HOURS: 00');
 			});
 	});
 
@@ -150,25 +123,12 @@
 					.attr('d',arc)
 					.style('fill',color(i%2))
 					.style('stroke','#212121')
-					.style('stroke-width','2px')	
-					//Linking the two visualizations together.		
+					.style('stroke-width','2px')			
 					.on('mouseover',function(d) {
 						d3.select(this).transition().duration(300).style('fill','#2ca25f');
-
-						d3.selectAll('.bars').transition().duration(300).style('fill',function(d,j) {
-							if (j == i) {
-								return '#2ca25f';
-							} else {
-								return '#99d8c9';
-							}
-						}); 
 					})	
 					.on('mouseout',function(d) {
 						d3.select(this).transition().duration(300).style('fill',color(i%2));
-
-						d3.selectAll('.bars').transition().duration(300).style('fill',function(d,j) {
-								return '#99d8c9';
-						}); 
 					});
 		});
 	});

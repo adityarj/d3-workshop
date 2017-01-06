@@ -4,7 +4,7 @@
 <head>
   <meta charset="utf-8">
 
-  <title>d3 Task 4 - Unique Local Visualization</title>
+  <title>d3 Task 3 - Unique Local Visualization</title>
   <meta name="description" content="d3 Heatmap">
   <meta name="author" content="Aditya Raju">
   <script src="https://d3js.org/d3.v4.min.js"></script>
@@ -45,7 +45,7 @@
 	];
 
 	//This geojson file was obtained from data.gov.sg, we'll be parsing it using the json function
-	d3.json('singapore.json',function(error,data) {
+	d3.json('singapore.geo.json',function(error,data) {
 		if (error) {console.log(error);}
 
 		/* We're gonna use the mercator projection for this visualization.
@@ -83,108 +83,8 @@
 
 		/* <<<<<<<<<<<<<<<<<<< WRITE YOUR OWN CODE FROM HERE >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> */
 
+		//You should use the above g variable to start off.
 
-		/* Okay, so here's the thought process behind my visualization. 
-		I thought I'd use one dimension as color and the other two dimensions as a rectangle for side by side comparison */
-		var colors = ['#ffeda0','#feb24c','#f03b20'];
-		
-		//Defining the scales we'll be using. I noticed the data for z is <10, so I'm just gonna assume its a 0-10 scale
-		var xscale = d3.scaleLinear()
-						.range([0,30]);
-
-		var yscale = d3.scaleLinear()
-						.range([0,30]);
-
-		var zscale = d3.scaleQuantize()
-						.domain([0,10])
-						.range(colors);								
-
-		//Define the domain for each of the scales. You could use d3 extent too.
-		xscale.domain([0, d3.max(dataset,function(d) {return d.x;})]);
-		yscale.domain([0, d3.max(dataset,function(d) {return d.y;})]);
-
-		/*Okay, let's create each of the visualizations now.
-		Notice the negative y values. This is because d3's origin is the top left of the screen.
-		Hence, the height and width will grow downwards and to the right respectivey. */
-		g.append('rect')
-			.attr('width','10px')
-			.attr('height',function(d) {return xscale(d.x);})
-			.attr('x','-6')
-			.attr('y',function(d) {return '-'+xscale(d.x);})
-			.attr('fill',function(d) {return zscale(d.z);});
-
-		g.append('rect')
-			.attr('width','10px')
-			.attr('height',function(d) {return yscale(d.y);})
-			.attr('x','6')
-			.attr('y',function(d) {return '-'+yscale(d.y);})
-			.attr('fill',function(d) {return zscale(d.z);});
-
-		//Let's append our labels to know what each co-ordinate is
-		g.append('text')
-			.text(function(d) {return d.place;})
-			.attr('x','20')
-			.style('font-family','Typo Grotesk')
-			.style('color','#212121');
-
-		/*Below are all the scale definitions to help understand the graph.
-		You could define them to your convenience, there really isn't a need 
-		to go about it in a d3 specific way*/
-
-		//Color scale
-		svg.append('g')
-			.attr('transform','translate('+width*0.8+','+ +(height*0.8 - 20)+')')
-			.selectAll('.zbox')
-			.data(colors)
-			.enter()
-			.append('rect')
-			.attr('width','25px')
-			.attr('height','20px')
-			.attr('x',function(d,i) {return i*25;})
-			.attr('fill',function(d) {return d;});	
-
-		//Text label for the color scale
-		svg.append('g')
-			.attr('transform','translate('+width*0.8+','+ +(height*0.8 - 20)+')')
-			.selectAll('.zlabel')
-			.data(['Z'])
-			.enter()
-			.append('text')
-			.attr('class','zlabel')
-			.text(function(d) {return d;})
-			.attr('y','16px')
-			.attr('x',function(d,i) {return 5;})
-			.style('font-family','Typo Grotesk');
-
-		//The X box
-		svg.append('rect')
-			.attr('class','xybox')
-			.attr('width',35)
-			.attr('height',30)
-			.attr('x',width*0.8)
-			.attr('y',height*0.8 - 60);	
-
-		//The Y box
-		svg.append('rect')
-			.attr('class','xybox')
-			.attr('width',35)
-			.attr('height',30)
-			.attr('x',width*0.8 + 40)
-			.attr('y',height*0.8 - 60);		
-
-		//The text label for X
-		svg.append('text')
-			.attr('x',width*0.8 + 12)
-			.attr('y',height*0.8 - 40)
-			.text('x')
-			.style('font-family','Typo Grotesk');
-
-		//The text label for Y
-		svg.append('text')
-			.attr('x',width*0.8 + 12 + 40)
-			.attr('y',height*0.8 - 40)
-			.text('y')
-			.style('font-family','Typo Grotesk');		
 
 	});
   </script>
