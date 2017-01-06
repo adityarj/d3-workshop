@@ -1,0 +1,140 @@
+<!doctype html>
+
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+
+  <title>d3 Force Layout</title>
+  <meta name="description" content="d3 Linear Chart">
+  <meta name="author" content="Aditya Raju">
+  <script src="https://d3js.org/d3.v4.min.js"></script>
+</head>
+
+<body>
+  <div id="force">
+  	
+  </div>
+  <style type="text/css">
+    .link {
+      stroke: #000;
+      stroke-width: 1.5px;
+    }
+
+    .node {
+      cursor: move;
+      fill: #ccc;
+      stroke: #000;
+      stroke-width: 1.5px;
+    }
+
+
+  </style>
+  <script type="text/javascript">
+    /*This code is adapted from Mike Bostock's, from mblocks org. It was converted from d3 v3 to d3 v4
+    It is demonstrate a d3 force layout and will not actually require coding*/
+
+    /*The usual dimensions definitions*/
+    var width = 960, height = 500;
+
+    /*Similar to the pie layout. This relies on the forceSimulation function.
+    Now this is a lot of quite specific stuff here, but basically, we define our 'nodes' in the 'link' section,
+    our center of our force layout (position), as well as the charge on each of the nodes */
+    var force = d3.forceSimulation()
+        .force('link',d3.forceLink().id(function(d,i) {return d.id;}))
+        .force('center',d3.forceCenter(width/2, height/2))
+        .force('charge',d3.forceManyBody());
+
+    //Define our canvas
+    var svg = d3.select("#force")
+        .append("svg")
+        .attr('id','svg')
+        .attr("width", width)
+        .attr("height", height);
+
+    //We'll use the json function to parse the json data
+    d3.json("data.json", function(error, graph) {
+
+      if (error) throw error;
+
+       //We define our links between the nodes. The links are basically just lines
+       var link = svg.append('g')
+        .selectAll(".link")
+        .data(graph.links)
+        .enter().append("line")
+          .attr("class", "link");
+
+       /*We define each of our nodes as circles. You could define them as squares or whatever, doesn't matter.
+       Notice the call to the drag function. This is to handle dragging the elements around, the functions are quite self-explanatory*/
+       var node = svg.append('g')
+        .selectAll(".node")
+        .data(graph.nodes)
+        .enter().append("circle")
+          .attr("class", "node")
+          .attr("r", 12)
+          .on("dblclick", dblclick)
+          .call(d3.drag()
+                    .on('start',dragstart)
+                    .on('drag',drag)
+                    .on('end',dragended));
+        /*attach our nodes and links to the force layout. This is some more d3 magic, but the 'tick' hander is doing the brunt of it.
+        Basically, whenever the state of the layout changes, such as when a node is dragged, the ticked function is called */
+        force
+          .nodes(graph.nodes)
+          .on('tick',ticked);
+        
+        force
+            .force('link')
+            .links(graph.links);
+
+        //The ticked function redraws the entire layout based on the new position of the dragged element and the applied force
+        function ticked() {
+          link.attr("x1", function(d) { return d.source.x; })
+              .attr("y1", function(d) { return d.source.y; })
+              .attr("x2", function(d) { return d.target.x; })
+              .attr("y2", function(d) { return d.target.y; });
+
+          node.attr("cx", function(d) { return d.x; })
+              .attr("cy", function(d) { return d.y; });
+        }    
+    });
+
+    
+    /* various functions to handle the drag and click of the vertices.
+    These are pretty basic to understand so we won't be going into them.
+    Of note, is the dragend function which will not reset the vertice if it is red, 
+    or in a 'sticky' state */
+    function dblclick(d) {
+      if (d3.select(this).style('opacity') == 1) {
+        d3.select(this).style('fill','#FF9100').style('opacity',0.99);
+      } else {
+        d3.select(this).style('fill','#ccc').style('opacity',1);
+        d.fx = null;
+        d.fy = null;
+      }
+      
+    }
+
+    function dragstart(d) {
+      if (!d3.event.active) force.alphaTarget(0.3).restart();
+      d3.select(this).style('fill','#FF9100').style('opacity',0.99);
+      d.fx = d.x;
+      d.fy = d.y;
+    }
+
+    function drag(d) {
+      d.fx = d3.event.x;
+      d.fy = d3.event.y;
+    }
+
+    function dragended(d) {
+      if (!d3.event.active) force.alphaTarget(0);
+
+      if (d3.select(this).style('opacity') != 0.99) {
+          d.fx = null;
+          d.fy = null;
+      }
+    }
+
+  </script>
+</body>
+</html>

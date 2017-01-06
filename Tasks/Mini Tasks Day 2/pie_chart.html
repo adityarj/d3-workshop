@@ -1,0 +1,93 @@
+<!doctype html>
+
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+
+  <title>d3 circle example</title>
+  <meta name="description" content="d3 circle">
+  <meta name="author" content="Aditya Raju">
+  <script src="https://d3js.org/d3.v4.min.js"></script>
+</head>
+
+<body>
+  <div id="circle">
+  	
+  </div>
+  <script type="text/javascript">
+
+  		//The following is going to be the width and height of our canvas. 
+  		var width = 960, height = 540; 
+
+      //Our data, as per the task
+      var data = [1,9]; //[macs,notmacs]
+      var labels = ['Macs','Not Macs'];
+      var colors = ['#dd1021','#212121']
+
+      /*Ordinal scales have discrete domains, so for the range of colors, 
+      it will cateogarically return each of them depending on the value.
+      In this case that would be 0 or 1*/
+      var color = d3.scaleOrdinal() 
+                      .range(colors);
+
+      //We define our canvas as usual, and center it
+  		var svg = d3.select('#circle')
+  						.append('svg')
+  						.attr('height',height)
+  						.attr('width',width)
+  						.append('g')
+              .attr('transform','translate('+width/2+','+height/2+')');
+
+      /*Used to draw an arc, normally we would need to pass in angles as well,
+      but the subsequent line of code will handle this for us*/
+      var arc = d3.arc()
+                    .innerRadius(0)
+                    .outerRadius(180);
+
+      /*This is a specific d3 magical feature, which abstracts the angle calculations for the path.
+      Hence, we only need to pass a set of values*/
+      var pie = d3.pie()
+                    .value(function(d) {return d;});
+
+      //Defining our chart, grouping each arc together
+      var chart = svg.selectAll('.arcs')
+                      .data(pie(data))
+                      .enter()
+                      .append('g')
+                      .attr('class','arcs');
+
+      /*A path element essentially is a group of points, to form well a path. 
+      How this is done is with the 'd' or datum, which specifies the x and y co-ordintes on our canvas.
+      Lets append each path to the groups we created above.*/
+      var arcs = chart.append('path')
+                      .attr('d',arc)
+                      .attr('fill',function(d,i) { return color(i); })
+
+      /*Alright, that's the main part done. Here, we're just gonna create labels to know what's what*/
+      var labels = svg.selectAll('.labels')
+                        .data(labels)
+                        .enter()
+                        .append('g')
+                        .attr('class','labels')
+                        .attr('transform',function(d,i) {
+                          return 'translate('+width/4+','+i*30+')';
+                        });
+
+      //The text to denote each color
+      var text = labels.append('text')
+                    .attr('transform','translate(15,10)')
+                    .text(function(d,i) {
+                      return d;
+                    })
+                    .style('font-family','Arial')
+                    .attr('fill','black');
+                    
+      //Squares to represent the arc color
+      var boxes = labels.append('rect')
+                      .attr('width',10)
+                      .attr('height',10)
+                      .attr('fill',function(d,i) {return colors[i]; });
+
+  </script>
+</body>
+</html>

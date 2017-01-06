@@ -1,0 +1,192 @@
+<!doctype html>
+
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+
+  <title>d3 Task 4 - Unique Local Visualization</title>
+  <meta name="description" content="d3 Heatmap">
+  <meta name="author" content="Aditya Raju">
+  <script src="https://d3js.org/d3.v4.min.js"></script>
+</head>
+
+<body>
+  <style type="text/css">
+  	.xybox {
+  		fill: none;
+  		stroke: #212121;
+  		stroke-width: 2px;
+  	}
+  </style>
+  <div id="map">
+  	
+  </div>
+  <script type="text/javascript">
+  	//Height and width as usual
+	var width = 960, height = 540; 
+
+	//Basic canvas to start our visualization
+	var svg = d3.select('#map')
+				.append('svg')
+				.attr('width',width)
+				.attr('height',height)
+				.append('g');
+
+
+    //The dataset we'll be dealing with. This data is 5 dimensional, but two dimensions have already been plotted for you
+	var dataset = [
+		{coordinates: [103.964118,1.340313],x: 294519,y:21.6,z: 8, place: "SUTD"},
+		{coordinates: [103.845736,1.299156],x: 89823,y:4.1,z: 9, place: "Dhoby Ghaut"},
+		{coordinates: [103.70639,1.34000],x: 223242,y:20.8,z: 5, place: "Jurong Point"},
+		{coordinates: [103.76982,1.43752],x: 102423,y: 15.4,z: 2, place: "Woodlands Checkpoint"},
+		{coordinates: [103.842999961,1.36867519196],x: 162324,y: 7.9, z: 6,place: "Ang Mo Kio MRT"},
+		{coordinates: [103.822110,1.265513],x: 214352,y: 17.8,z:9,place: "VivoCity"},
+		{coordinates: [103.845255,1.41957],x:50395,y:19.2,z:3,place:"Safra Yishun"}
+	];
+
+	//This geojson file was obtained from data.gov.sg, we'll be parsing it using the json function
+	d3.json('singapore.json',function(error,data) {
+		if (error) {console.log(error);}
+
+		/* We're gonna use the mercator projection for this visualization.
+		First, it's necessary to center the geopath, which we'll do by using the geoCentroid function.
+		Again, another d3 specific magical function, we won't be delving into the workings of it */
+		var center = d3.geoCentroid(data);
+		var projection = d3.geoMercator().center(center);	
+		var paths = d3.geoPath()
+					.projection(projection);
+
+		/*Since Singapore is incredibly small, the mercator projection will reflect this.
+		So, to bring it up to a more discernable size, we scale it by 84,000 times. */
+		projection.scale(84000);
+			
+		//We'll be appending a path element, and feeding the 'd' atttribute the geopath	
+		svg.append('path')
+				.attr('class','bounds')
+				.datum(data)
+				.attr('d',paths)
+				.style('fill','none')
+				.style('stroke','#A8A8A8')
+
+		//That's basically it for making a map. d3 makes it incredibly easy
+
+		/*We'll be using the same projection to map our data co-ordinates onto the svg.
+		The process is quite straightforward - the projection takes in the co-ordinates and returns 
+		scalar x, and y co-ordinates. We then, just need to translate them */
+		var g = svg.selectAll('.groups')
+			.data(dataset)
+			.enter()
+			.append('g')
+			.attr('class','groups')
+			.attr('transform',function(d) {return 'translate('+projection(d.coordinates)[0]+','
+															  +projection(d.coordinates)[1]+')';});
+
+		/* <<<<<<<<<<<<<<<<<<< WRITE YOUR OWN CODE FROM HERE >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> */
+
+
+		/* Okay, so here's the thought process behind my visualization. 
+		I thought I'd use one dimension as color and the other two dimensions as a rectangle for side by side comparison */
+		var colors = ['#ffeda0','#feb24c','#f03b20'];
+		
+		//Defining the scales we'll be using. I noticed the data for z is <10, so I'm just gonna assume its a 0-10 scale
+		var xscale = d3.scaleLinear()
+						.range([0,30]);
+
+		var yscale = d3.scaleLinear()
+						.range([0,30]);
+
+		var zscale = d3.scaleQuantize()
+						.domain([0,10])
+						.range(colors);								
+
+		//Define the domain for each of the scales. You could use d3 extent too.
+		xscale.domain([0, d3.max(dataset,function(d) {return d.x;})]);
+		yscale.domain([0, d3.max(dataset,function(d) {return d.y;})]);
+
+		/*Okay, let's create each of the visualizations now.
+		Notice the negative y values. This is because d3's origin is the top left of the screen.
+		Hence, the height and width will grow downwards and to the right respectivey. */
+		g.append('rect')
+			.attr('width','10px')
+			.attr('height',function(d) {return xscale(d.x);})
+			.attr('x','-6')
+			.attr('y',function(d) {return '-'+xscale(d.x);})
+			.attr('fill',function(d) {return zscale(d.z);});
+
+		g.append('rect')
+			.attr('width','10px')
+			.attr('height',function(d) {return yscale(d.y);})
+			.attr('x','6')
+			.attr('y',function(d) {return '-'+yscale(d.y);})
+			.attr('fill',function(d) {return zscale(d.z);});
+
+		//Let's append our labels to know what each co-ordinate is
+		g.append('text')
+			.text(function(d) {return d.place;})
+			.attr('x','20')
+			.style('font-family','Typo Grotesk')
+			.style('color','#212121');
+
+		/*Below are all the scale definitions to help understand the graph.
+		You could define them to your convenience, there really isn't a need 
+		to go about it in a d3 specific way*/
+
+		//Color scale
+		svg.append('g')
+			.attr('transform','translate('+width*0.8+','+ +(height*0.8 - 20)+')')
+			.selectAll('.zbox')
+			.data(colors)
+			.enter()
+			.append('rect')
+			.attr('width','25px')
+			.attr('height','20px')
+			.attr('x',function(d,i) {return i*25;})
+			.attr('fill',function(d) {return d;});	
+
+		//Text label for the color scale
+		svg.append('g')
+			.attr('transform','translate('+width*0.8+','+ +(height*0.8 - 20)+')')
+			.selectAll('.zlabel')
+			.data(['Z'])
+			.enter()
+			.append('text')
+			.attr('class','zlabel')
+			.text(function(d) {return d;})
+			.attr('y','16px')
+			.attr('x',function(d,i) {return 5;})
+			.style('font-family','Typo Grotesk');
+
+		//The X box
+		svg.append('rect')
+			.attr('class','xybox')
+			.attr('width',35)
+			.attr('height',30)
+			.attr('x',width*0.8)
+			.attr('y',height*0.8 - 60);	
+
+		//The Y box
+		svg.append('rect')
+			.attr('class','xybox')
+			.attr('width',35)
+			.attr('height',30)
+			.attr('x',width*0.8 + 40)
+			.attr('y',height*0.8 - 60);		
+
+		//The text label for X
+		svg.append('text')
+			.attr('x',width*0.8 + 12)
+			.attr('y',height*0.8 - 40)
+			.text('x')
+			.style('font-family','Typo Grotesk');
+
+		//The text label for Y
+		svg.append('text')
+			.attr('x',width*0.8 + 12 + 40)
+			.attr('y',height*0.8 - 40)
+			.text('y')
+			.style('font-family','Typo Grotesk');		
+
+	});
+  </script>
+</body>
+</html>

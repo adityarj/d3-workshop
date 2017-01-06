@@ -1,0 +1,178 @@
+<!doctype html>
+
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+
+  <title>d3 Task 5 - Linking Visualizations</title>
+  <meta name="description" content="d3 Heatmap">
+  <meta name="author" content="Aditya Raju">
+  <script src="https://d3js.org/d3.v4.min.js"></script>
+</head>
+
+<body>
+  <style type="text/css">
+  	.xybox {
+  		fill: none;
+  		stroke: #212121;
+  		stroke-width: 2px;
+  	}
+  	#textHover {
+  		font-family: 'Typo Grotesk';
+  		margin-left: 30px;
+  		font-size: 20px; 
+  	}
+  </style>
+  <div id="map">
+  	
+  </div>
+  <div id="textHover">
+  	HOURS: 00
+  </div>
+  <script type="text/javascript">
+  	//Height and width as usual
+	var width = 960, height = 540, margin = 30; 
+
+	//Basic canvas to start our visualization
+	var svg = d3.select('#map')
+				.append('svg')
+				.attr('width',width)
+				.attr('height',height);
+
+	//Let's first visualize our bar chart, which is basically just a bunch of rectangle elements			
+	var barchart = svg.append('g')
+				.attr('transform','translate('+margin+','+margin+')');
+
+	//Defining our scales. A band scale is a type of ordinal scale that seperates the space into bands
+	var x = d3.scaleBand().rangeRound([0,width/2]).padding(0.1);
+	var y = d3.scaleLinear().rangeRound([height - margin*2,0]);
+
+	//Let's parse our json and define our domains
+	d3.json('week_hours.json',function(error,data) {
+		if (error) throw error;
+
+		x.domain(data.week.map(function(d) { return d.day; }));
+		y.domain([0,d3.max(data.week,function(d) { return d.hours; })]);
+
+		//Appending the axes
+		barchart.append('g')
+			.attr('class','axis y.axis')
+			.call(d3.axisLeft(y));
+
+		barchart.append('g')
+			.attr('class','axis x.axis')
+			.attr('transform','translate(0,'+ +(height - margin*2)+')')
+			.call(d3.axisBottom(x));
+
+		//Appending the bars, quite straightforward
+		barchart.selectAll('.bars')
+			.data(data.week)
+			.enter()
+			.append('rect')
+			.attr('class','bars')
+			.attr('x',function(d) { return x(d.day); })
+			.attr('y',function(d) { return y(d.hours) ; })
+			.attr('width',x.bandwidth())
+			/*The height of the bar has to be substracted due to the way d3 draws rectangles.
+			In d3, the rectangle grows downward, instead of upward as we require, due to 
+			way the cartesian plane is defined */
+			.attr('height',function(d) { return height - margin*2 - y(d.hours); })
+			.attr('fill','#99d8c9') 
+			/*Here we go with trying to link the visualizations together.
+			The code itself is quite straightforward, but a bit tedious. It has to select each
+			element from the other and iterate over it, appplying the fill property again. */
+			.on('mouseover',function(d,i) {
+				d3.select(this).transition().duration(300).style('fill','#2ca25f');
+
+				d3.selectAll('.arc').transition().duration(300).style('fill', function(d,j) {
+					if (j == i) {
+						return '#2ca25f';
+					} else {
+						return color(j%2);
+					}
+				});
+
+
+
+			})
+			/*This may not seem useful now, but what if we weren't using an ordinal scale, or perhaps a line chart?
+			In that case, we would need the cursor's x axis point to be exactly mirrored on the other graph(s). Hence, 
+			inverting the scale to obtain the absolute x axis data value makes sense. However, this is for further reading*/
+			.on('mousemove',function(d,i) {
+				d3.select('#textHover').text('HOURS: 0'+Math.round(y.invert(d3.event.y - margin),2));
+			})
+			//Restore the graph on mouseout
+			.on('mouseout',function(d,i) {
+				d3.select(this).transition().duration(300).style('fill','#99d8c9');
+
+				d3.selectAll('.arc').transition().duration(300).style('fill', function(d,j) {
+					return color(j%2);
+				});
+
+				d3.select('#textHover').text('HOURS: 00');
+			});
+	});
+
+	//Now let's create a rosechart. 
+	var rosechart = svg.append('g')
+						.attr('transform','translate('+width*0.8+','+height/2+')');
+
+	//Two point ordinal color scale
+	var color = d3.scaleOrdinal()
+					.range(['#e5f5f9','#99d8c9']);		
+
+	//Defining the base radius for each petal
+	var radius = 120;
+
+	d3.json('week_number.json',function(error,data) {
+
+		//This angle will be where each arc will be drawn from
+		var startAngle = 0;
+
+		/*We iterate over the data to create a seperate arc each time.
+		We then append this arc as a path to obtain the rose. You might be
+		wondering why we couldn't use the normal d3 way of doing this instead of 
+		manually iterating over each record. Well, the answer is because the arc function
+		needs to be different each time, to create seperate arcs*/
+		data.week.forEach(function(d,i) {
+
+			var arc = d3.arc()
+						.innerRadius(radius/3)
+						.outerRadius(radius + (d.number*radius)/100)
+						.startAngle(startAngle)
+						.endAngle((2*Math.PI)*(i+1)/5);
+
+			startAngle = (2*Math.PI)*(i+1)/5;
+
+			//We append the path and do the same procedure as before
+			rosechart.append('path')
+					.attr('class','arc')
+					.attr('d',arc)
+					.style('fill',color(i%2))
+					.style('stroke','#212121')
+					.style('stroke-width','2px')	
+					//Linking the two visualizations together.		
+					.on('mouseover',function(d) {
+						d3.select(this).transition().duration(300).style('fill','#2ca25f');
+
+						d3.selectAll('.bars').transition().duration(300).style('fill',function(d,j) {
+							if (j == i) {
+								return '#2ca25f';
+							} else {
+								return '#99d8c9';
+							}
+						}); 
+					})	
+					.on('mouseout',function(d) {
+						d3.select(this).transition().duration(300).style('fill',color(i%2));
+
+						d3.selectAll('.bars').transition().duration(300).style('fill',function(d,j) {
+								return '#99d8c9';
+						}); 
+					});
+		});
+	});
+	
+  </script>
+</body>
+</html>

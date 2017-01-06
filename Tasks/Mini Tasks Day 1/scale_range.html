@@ -1,0 +1,92 @@
+<!doctype html>
+
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+
+  <title>d3 circle example</title>
+  <meta name="description" content="d3 circle">
+  <meta name="author" content="Aditya Raju">
+  <script src="https://d3js.org/d3.v4.min.js"></script>
+</head>
+
+<body>
+  <div id="circle">
+  	
+  </div>
+  <script type="text/javascript">
+
+  		var width = 960, height = 540; 
+
+      var colors = ['#E8F4F8','#72BCD4'];
+
+
+      /* four scales below, uncomment the lines to see how different scales work.
+      The names do hint at their specific funtions*/
+      var scaleLinear = d3.scaleLinear()
+                          .domain([0,100])
+                          .range([0,960]);
+
+      var scalePow = d3.scalePow()
+                          .domain([0,100])
+                          .exponent(2)
+                          .range([0,960]);
+
+      var colorQuanta = d3.scaleQuantize()
+                          .domain([0,100])
+                          .range(colors);
+
+      var colorLinear = d3.scaleLinear()
+                          .domain([0,100])
+                          .range(colors);
+
+      var data = [20,40,60,80];
+
+  		var svg = d3.select('#circle')
+  						.append('svg')
+  						.attr('height',height)
+  						.attr('width',width)
+  						.append('g'); 
+
+
+      /*We create a linear order of circles. The creation part isn't important. 
+      Try and uncomment the two lines to see how the position of the circles as well as the color varies.
+      This demonstrates the different way each of the scales work*/
+
+      var circles = svg.selectAll('.circles')
+                        .data(data)
+                        .enter()
+                        .append('circle')
+                        .attr('class','circles')
+                        .attr('cx',function(d,i) { 
+                          return scaleLinear(d); 
+                          //return scalePow(d);
+                        })
+                        .attr('cy',20)
+                        .attr('r',10)
+                        .attr('fill',function(d,i) { 
+                          return colorLinear(d); 
+                          //return colorQuanta(d);
+                        });
+
+      //Our linear definition of the scale required to create a line joining all four dots                  
+      var connector_linear = svg.append('line')
+                                  .attr('x1',scaleLinear(20))
+                                  .attr('y1',20)
+                                  .attr('x2',scaleLinear(80))
+                                  .attr('y2',20)
+                                  .attr('stroke-width',2)
+                                  .attr('stroke','grey');
+
+      // Uncommen the line to see the exponential scale being used to create the line
+      // var connector_pow = svg.append('line')
+      //                             .attr('x1',scalePow(Math.sqrt(scaleLinear(20)/(960/(100*100))))) /* The equation is y = mx^2 + c. We get our Y from the previous scale, and use it to find the x value that will satisfy the equation */
+      //                             .attr('y1',20)                                               
+      //                             .attr('x2',scalePow(Math.sqrt(scaleLinear(80)/(960/(100*100))))) 
+      //                             .attr('y2',20)
+      //                             .attr('stroke-width',2)
+      //                             .attr('stroke','black');
+
+  </script>
+</body>
+</html>
