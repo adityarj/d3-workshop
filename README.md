@@ -8,4 +8,5 @@ please refer to the slides.
    You could use Python's HTTP Server. cd into your file directory and run
 	* python -m SimpleHTTPServer (if <= Python 3.0)
 	* python3 -m http.server (if Python >=3.0)
-   Then, open your browser and navigate to localhost:8000/<filename>	
+   
+   Then, open your browser and navigate to localhost:8000/{filename}	
