@@ -1,0 +1,91 @@
+<!doctype html>
+
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+
+  <title>d3 HW Task - Simple Bar Chart</title>
+  <meta name="author" content="Aditya Raju">
+  <script src="https://d3js.org/d3.v4.min.js"></script>
+</head>
+
+<body>
+  <style type="text/css">
+  	.xybox {
+  		fill: none;
+  		stroke: #212121;
+  		stroke-width: 2px;
+  	}
+  	#textHover {
+  		font-family: 'Typo Grotesk';
+  		margin-left: 30px;
+  		font-size: 20px; 
+  	}
+  </style>
+  <div id="map">
+  	
+  </div>
+  <script type="text/javascript">
+  	//Height and width as usual
+	var width = 960, height = 540, margin = 30; 
+
+	//Basic canvas to start our visualization
+	var svg = d3.select('#map')
+				.append('svg')
+				.attr('width',width)
+				.attr('height',height);
+
+	//Let's first visualize our bar chart, which is basically just a bunch of rectangle elements			
+	var barchart = svg.append('g')
+				.attr('transform','translate('+margin+','+margin+')');
+
+	//Defining our scales. A band scale is a type of ordinal scale that seperates the space into bands
+	var x = d3.scaleBand().rangeRound([0,width/2]).padding(0.1);
+	var y = d3.scaleLinear().rangeRound([height - margin*2,0]);
+
+	//Let's parse our json and define our domains
+	d3.json('week_hours.json',function(error,data) {
+		if (error) throw error;
+
+		//Defining our domains
+		x.domain(data.week.map(function(d) { return d.day; }));
+		y.domain([0,d3.max(data.week,function(d) { return d.hours; })]);
+
+		//Appending the bars, quite straightforward
+		barchart.selectAll('.bars')
+			.data(data.week)
+			.enter()
+			.append('rect')
+			.attr('class','bars')
+			.attr('x',function(d) { return x(d.day); })
+			.attr('y',function(d) { return y(d.hours) ; })
+			.attr('width',x.bandwidth())
+			/*The height of the bar has to be substracted due to the way d3 draws rectangles.
+			In d3, the rectangle grows downward, instead of upward as we require, due to 
+			way the cartesian plane is defined */
+			.attr('height',function(d) { return height - margin*2 - y(d.hours); })
+			.attr('fill','#99d8c9') 
+			.on('mouseover',function(d,i) {
+				d3.select(this).transition().duration(300).style('fill','#2ca25f');
+			})
+			//Restore the graph on mouseout
+			.on('mouseout',function(d,i) {
+				d3.select(this).transition().duration(300).style('fill','#99d8c9');
+			});
+
+		//Let's append our text now
+		barchart.selectAll('.labels')
+			.data(data.week)	
+			.enter()
+			.append('text')
+			.attr('class','labels')
+			.attr('x',function(d) { return 10 + x(d.day); }) //The slight displacement is to position it in the center
+			.attr('y',function(d) { return height - margin*2 - 10;}) //To position the bars uniformly at the bottom
+			.text(function(d) {return d.day})
+			.style('font-family','Typo Grotesk')
+			.style('font-size','12px');
+	});
+	
+  </script>
+</body>
+</html>

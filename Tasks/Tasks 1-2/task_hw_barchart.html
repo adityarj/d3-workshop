@@ -1,0 +1,58 @@
+<!doctype html>
+
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+
+  <title>d3 Task 4 - Linking Visualizations</title>
+  <meta name="author" content="Aditya Raju">
+  <script src="https://d3js.org/d3.v4.min.js"></script>
+</head>
+
+<body>
+  <style type="text/css">
+  	.xybox {
+  		fill: none;
+  		stroke: #212121;
+  		stroke-width: 2px;
+  	}
+  	#textHover {
+  		font-family: 'Typo Grotesk';
+  		margin-left: 30px;
+  		font-size: 20px; 
+  	}
+  </style>
+  <div id="map">
+  	
+  </div>
+  <script type="text/javascript">
+  	//Height and width as usual
+	var width = 960, height = 540, margin = 30; 
+
+	//Basic canvas to start our visualization
+	var svg = d3.select('#map')
+				.append('svg')
+				.attr('width',width)
+				.attr('height',height);
+
+	//Let's first visualize our bar chart, which is basically just a bunch of rectangle elements			
+	var barchart = svg.append('g')
+				.attr('transform','translate('+margin+','+margin+')');
+
+	//Defining our scales. A band scale is a type of ordinal scale that seperates the space into bands
+	var x = d3.scaleBand().rangeRound([0,width/2]).padding(0.1);
+	var y = d3.scaleLinear().rangeRound([height - margin*2,0]);
+
+	//Let's parse our json and define our domains
+	d3.json('week_hours.json',function(error,data) {
+		if (error) throw error;
+
+		x.domain(data.week.map(function(d) { return d.day; }));
+		y.domain([0,d3.max(data.week,function(d) { return d.hours; })]);
+
+		//Write your code below
+	});
+	
+  </script>
+</body>
+</html>
