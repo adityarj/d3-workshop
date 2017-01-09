@@ -29,7 +29,7 @@
   <script type="text/javascript">
 
     //Here's our data, the number of flights I've flown each month in 2016
-    var data = [
+    var flightQuantity = [
                   {month: 'January',value: 2},
                   {month: 'February', value:3},
                   {month: 'March', value: 3},
@@ -64,20 +64,20 @@
                 .range([height - margin*2,0]);
 
       //Here we define the domains of the two scales. We cannot use d3.extent for the x domain as the data is non-numeric
-      x.domain(data.map(function(d,i) {return d.month;}));
-      y.domain(d3.extent(data, function(d,i) {return d.value;}));
+      x.domain(flightQuantity.map(function(d,i) {return d.month;}));
+      y.domain(d3.extent(flightQuantity, function(d,i) {return d.value;}));
 
       //Define your line function below. Read the API for reference
       var line;
 
       /* Now we should append our axes. */
-      svg.append('g')
+      var xAxis = svg.append('g')
           .attr('class','axis axis.x')
           .attr('transform','translate(0,'+ +(height - margin*2)+')')
           .call(d3.axisBottom(x));
 
       //Let's do the same for the y axis
-      svg.append('g')
+      var yAxis = svg.append('g')
           .attr('class','axis axis.y')
           .call(d3.axisLeft(y));
 
@@ -87,8 +87,8 @@
       /*A datum just binds the data to a single, in this case, 'path' element. 
       This is different from data() which can bind to multiple elements.
       This really is just d3 specific jargon. You'll get used to it */
-      svg.append('path')
-          .datum(data)
+      var pathElement = svg.append('path')
+          .datum(flightQuantity)
           .attr('class','line')
           .attr('d',line)    
           .attr('fill','none')
@@ -96,7 +96,7 @@
           .attr('stroke','#9999ff');
 
       //Just one label, and we're done
-      svg.append('text')
+      var yAxisLabel = svg.append('text')
           .attr('transform','translate('+margin+','+margin+')')
           .text('Number of flights')
           .style('font-family','dosis')

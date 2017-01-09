@@ -19,7 +19,7 @@
   		var width = 960, height = 540; 
 
       //Our data, as per the task
-      var data = [1,9]; //[macs,notmacs]
+      var quantity = [1,9]; //[macs,notmacs]
       var labels = ['Macs','Not Macs'];
       var colors = ['#dd1021','#212121']
 
@@ -46,14 +46,14 @@
       /*This is a specific d3 magical feature, which abstracts the angle calculations for the path.
       Hence, we only need to pass a set of values*/
       var pie = d3.pie()
-                    .value(function(d) {return d;});
+                    .value(function(d) {return d;})
 
       //Defining our chart, grouping each arc together
-      var chart = svg.selectAll('.arcs')
-                      .data(pie(data))
+      var chart = svg.selectAll('.eachChart')
+                      .data(pie(quantity))
                       .enter()
                       .append('g')
-                      .attr('class','arcs');
+                      .attr('class','eachChart');
 
       /*A path element essentially is a group of points, to form well a path. 
       How this is done is with the 'd' or datum, which specifies the x and y co-ordintes on our canvas.
@@ -73,7 +73,7 @@
                         });
 
       //The text to denote each color
-      var text = labels.append('text')
+      var labelText = labels.append('text')
                     .attr('transform','translate(15,10)')
                     .text(function(d,i) {
                       return d;
@@ -82,7 +82,7 @@
                     .attr('fill','black');
                     
       //Squares to represent the arc color
-      var boxes = labels.append('rect')
+      var labelBox = labels.append('rect')
                       .attr('width',10)
                       .attr('height',10)
                       .attr('fill',function(d,i) {return colors[i]; });

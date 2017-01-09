@@ -73,16 +73,18 @@
 			.attr('y',function(d) { return y(d.hours) ; })
 			.attr('width',x.bandwidth())
 			/*The height of the bar has to be substracted due to the way d3 draws rectangles.
-			In d3, the rectangle grows downward, instead of upward as we require, due to 
+			In d3, the rectangle grows downward, instead of upward as we require, due to the
 			way the cartesian plane is defined */
 			.attr('height',function(d) { return height - margin*2 - y(d.hours); })
 			.attr('fill','#99d8c9') 
 			.on('mouseover',function(d,i) {
 				d3.select(this).transition().duration(300).style('fill','#2ca25f');
+				// <<<<<<<<<<<<<<<<<<<<<< ADD CODE HERE >>>>>>>>>>>>>>>>>>>>>>>> 
 			})
 			//Restore the graph on mouseout
 			.on('mouseout',function(d,i) {
 				d3.select(this).transition().duration(300).style('fill','#99d8c9');
+				// <<<<<<<<<<<<<<<<<<<<<< ADD CODE HERE >>>>>>>>>>>>>>>>>>>>>>>> 
 			});
 	});
 
@@ -126,9 +128,11 @@
 					.style('stroke-width','2px')			
 					.on('mouseover',function(d) {
 						d3.select(this).transition().duration(300).style('fill','#2ca25f');
+						// <<<<<<<<<<<<<<<<<<<<<< ADD CODE HERE >>>>>>>>>>>>>>>>>>>>>>>> 
 					})	
 					.on('mouseout',function(d) {
 						d3.select(this).transition().duration(300).style('fill',color(i%2));
+						// <<<<<<<<<<<<<<<<<<<<<< ADD CODE HERE >>>>>>>>>>>>>>>>>>>>>>>> 
 					});
 		});
 	});

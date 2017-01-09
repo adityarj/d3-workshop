@@ -83,7 +83,7 @@
 			.on('mouseover',function(d,i) {
 				d3.select(this).transition().duration(300).style('fill','#2ca25f');
 
-				d3.selectAll('.arc').transition().duration(300).style('fill', function(d,j) {
+				d3.selectAll('.arc').transition().duration(300).style('fill', function(e,j) {
 					if (j == i) {
 						return '#2ca25f';
 					} else {
@@ -104,7 +104,7 @@
 			.on('mouseout',function(d,i) {
 				d3.select(this).transition().duration(300).style('fill','#99d8c9');
 
-				d3.selectAll('.arc').transition().duration(300).style('fill', function(d,j) {
+				d3.selectAll('.arc').transition().duration(300).style('fill', function(e,j) {
 					return color(j%2);
 				});
 

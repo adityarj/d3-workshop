@@ -20,7 +20,8 @@
   		var width = 960, height = 540; 
 
       //My data, as per the task. Change this to your data.
-      var data = [1,9]; //[macs,notmacs]
+      var quantity = [1,9]; //[macs,notmacs]
+      
       var labels = ['Macs','Not Macs'];
       var colors = ['#dd1021','#212121']
 
@@ -44,31 +45,32 @@
                     .innerRadius(0)
                     .outerRadius(180);
 
-      /*Define your pie function below. Read the API to understand what to define for d3.pie()*/
+      /*Define your pie function below. Read the API to understand what to define for d3.pie(). 
+      Notice the data has been added our pie in the next stage.*/
       var pie;
 
       //Defining our chart, grouping each arc together
-      var chart = svg.selectAll('.arcs')
-                      .data(pie(data))
+      var chart = svg.selectAll('.eachChart')
+                      .data(pie(quantity))
                       .enter()
                       .append('g')
-                      .attr('class','arcs');
+                      .attr('class','eachChart');
 
-      /*Define your arcs to append to your chart's g elements. Remember that for elements other than circles, rectangles and lines require ___ .*/
+      /*Define your arcs to append to your chart's g elements. Remember that for elements other than circles, rectangles and lines require path elements .*/
       var arcs;
 
       /*Alright, that's the main part done. Here, we're just gonna create labels to know what's what*/
-      var labels = svg.selectAll('.labels')
+      var labels = svg.selectAll('.eachLabel')
                         .data(labels)
                         .enter()
                         .append('g')
-                        .attr('class','labels')
+                        .attr('class','eachLabel')
                         .attr('transform',function(d,i) {
                           return 'translate('+width/4+','+i*30+')';
                         });
 
       //The text to denote each color
-      var text = labels.append('text')
+      var labelText = labels.append('text')
                     .attr('transform','translate(15,10)')
                     .text(function(d,i) {
                       return d;
@@ -77,7 +79,7 @@
                     .attr('fill','black');
                     
       //Squares to represent the arc color
-      var boxes = labels.append('rect')
+      var labelBox = labels.append('rect')
                       .attr('width',10)
                       .attr('height',10)
                       .attr('fill',function(d,i) {return colors[i]; });
