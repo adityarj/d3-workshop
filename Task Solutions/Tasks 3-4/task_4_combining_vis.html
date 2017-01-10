@@ -154,7 +154,7 @@
 					.on('mouseover',function(d) {
 						d3.select(this).transition().duration(300).style('fill','#2ca25f');
 
-						d3.selectAll('.bars').transition().duration(300).style('fill',function(d,j) {
+						d3.selectAll('.bars').transition().duration(300).style('fill',function(e,j) {
 							if (j == i) {
 								return '#2ca25f';
 							} else {
@@ -165,7 +165,7 @@
 					.on('mouseout',function(d) {
 						d3.select(this).transition().duration(300).style('fill',color(i%2));
 
-						d3.selectAll('.bars').transition().duration(300).style('fill',function(d,j) {
+						d3.selectAll('.bars').transition().duration(300).style('fill',function(e,j) {
 								return '#99d8c9';
 						}); 
 					});
