@@ -6,7 +6,7 @@ please refer to the slides.
 2. **Use a HTTP Server to run the HTML files**
 
    You could use Python's HTTP Server. cd into your file directory and run
-	* python -m SimpleHTTPServer (if <= Python 3.0)
+	* python -m SimpleHTTPServer (if < Python 3.0)
 	* python3 -m http.server (if Python >=3.0)
    
    Then, open your browser and navigate to localhost:8000/{filename}	
@@ -14,7 +14,7 @@ please refer to the slides.
 # Workshop Content & Requirements
 1. **A text editor:** I recommend using Sublime Text (https://www.sublimetext.com/)
 
-2. **Basic JS/HTML/CSS knowledge:** Please read or learn online if you have no prior experience. Here's some stuff to start off:
+2. **Intermediate S/HTML/CSS knowledge:** Please read or learn online if you have no prior experience. Here's some stuff to start off:
 	* HTML&CSS - https://bluehost.blog/website-design/html-css-cheat-sheet-infographic-4181/
 	* JavaScript - https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Grammar_and_types
 	
